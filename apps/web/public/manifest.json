@@ -1,0 +1,20 @@
+{
+  "name": "SUTE Schedule",
+  "short_name": "SUTE",
+  "description": "Розклад занять ДТЕУ — завжди під рукою",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14332a",
+  "theme_color": "#14332a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "uk"
+}

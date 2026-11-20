@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Faculty {
+  id         String   @id @default(cuid())
+  externalId String   @unique // ID з МІА
+  name       String
+  shortName  String?
+  groups     Group[]
+}
+
+model Group {
+  id         String   @id @default(cuid())
+  externalId String   @unique // ID з МІА
+  name       String   // "ФІТ 2-6"
+  course     Int
+  facultyId  String
+  faculty    Faculty  @relation(fields: [facultyId], references: [id])
+  students   Student[]
+  schedule   ScheduleItem[]
+  changes    ScheduleChange[]
+  lastSyncedAt DateTime? @default(now())
+}
+
+model Student {
+  id           String   @id @default(cuid())
+  fullName     String
+  groupId      String
+  group        Group    @relation(fields: [groupId], references: [id])
+  user         User?
+}
+
+model User {
+  id             String   @id @default(cuid())
+  telegramId     BigInt?  @unique
+  studentId      String?  @unique
+  student        Student? @relation(fields: [studentId], references: [id])
+  preferences    Json?    // Налаштування теми тощо
+  notify15Min    Boolean  @default(true)
+  notify1Min     Boolean  @default(false)
+  notifyMorning  Boolean  @default(true)
+  notifyChanges  Boolean  @default(false)
+  miaSessionToken String? // Зашифрований токен сесії МІА
+  lastSeenAt     DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  activities     DailyActivity[]
+  grades         Grade[]
+}
+
+model DailyActivity {
+  id         String   @id @default(cuid())
+  telegramId BigInt
+  date       DateTime @db.Date
+  user       User     @relation(fields: [telegramId], references: [telegramId], onDelete: Cascade)
+
+  @@unique([telegramId, date])
+  @@index([date])
+}
+
+model ScheduleItem {
+  id           String   @id @default(cuid())
+  externalId   String?  // Складений ключ або хеш
+  date         DateTime @db.Date
+  startTime    String   // "09:00"
+  endTime      String   // "10:20"
+  lessonNumber Int
+  subject      String
+  teacher      String?
+  classroom    String?
+  type         String   // lecture, practice, etc.
+  groupId      String
+  group        Group    @relation(fields: [groupId], references: [id])
+  annotation   String?
+  updatedAt    DateTime @updatedAt
+
+  @@unique([groupId, date, startTime, subject]) // Для уникнення дублів
+  @@index([groupId, date])
+  @@index([date])
+  @@index([teacher])
+}
+
+model ScheduleChange {
+  id           String   @id @default(cuid())
+  groupId      String
+  group        Group    @relation(fields: [groupId], references: [id])
+  date         DateTime @db.Date
+  changeType   String   // "added", "removed", "modified"
+  lessonNumber Int?
+  subject      String?
+  oldValue     String?  // JSON string of old lesson
+  newValue     String?  // JSON string of new lesson
+  notified     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([groupId, notified])
+  @@index([createdAt])
+}
+
+model Grade {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject      String
+  currentScore Float
+  maxScore     Float
+  category     String   // "journal", "session", "overall"
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, subject, category])
+  @@index([userId])
+}

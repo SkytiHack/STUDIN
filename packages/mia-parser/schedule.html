@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <meta name="csrf-param" content="_csrf-frontend">
+<meta name="csrf-token" content="cLbVCJu_GNs_kCCwD2jof0Mwo5Ug80Yp7sfR5EUJL-0Dx49rwdtt4m_oS4BFLKsXMQbF5ljHa32hiYmLAEZtiQ==">
+    <title>Розклад: Академ. групи </title>
+    </head>
+
+<body
+        id="page-top" >
+
+<div id="wrapper">
+    <ul id="accordionSidebar" class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion "><a class="sidebar-brand d-flex align-items-center justify-content-center" href="/"><div class="sidebar-brand-icon"><img src="/icon.png" height="48px" alt=""></div></a><hr class="sidebar-divider my-0"><li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-fw fa-home"></i><span>Головна</span></a></li><hr class="sidebar-divider"><div class="sidebar-heading">Сервіси</div><li class="nav-item active"><a class="nav-link" href="#" data-toggle="collapse" data-target="#w8-collapse1" aria-expanded="false" aria-controls="w8-collapse1"><i class="fas fa-fw fa-calendar"></i><span>Розклад</span></a><div id="w8-collapse1" class="menu collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+<div class="bg-white py-2 collapse-inner rounded">
+<a class="collapse-item active" href="/time-table/group">Академ. групи</a>
+<a class="collapse-item" href="/time-table/teacher">Викладача</a>
+</div>
+</div></li><hr class="sidebar-divider"><div class="mobile-link-block"><div class="sidebar-heading">Мобільний розклад</div><a class="d-block mx-3" href="https://play.google.com/store/apps/details?id=com.mkr.shedule_app" target="_blank"><img class="rounded mt-1" src="/images/googleplay.png" width="100%" alt=""></a><a class="d-block mx-3" href="https://itunes.apple.com/us/app/%D1%80%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D0%B9-%D0%BC%D0%BA%D1%80/id1382175045?l=uk&amp;ls=1&amp;mt=8" target="_blank"><img class="rounded mt-1 mb-1" src="/images/appstore.png" width="100%" alt=""></a><hr class="sidebar-divider"></div><div class="sidebar-heading text-center mb-2">24 серпня 2026 р. о 01:18:42 GMT+3</div><hr class="sidebar-divider"><div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+        
+<nav class="navbar navbar-expand bg-white topbar mb-3 static-top shadow" role="navigation">
+
+    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+        <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="header text-center ml-md-auto h2 d-none d-md-block">
+        Державний торговельно-економічний університет    </div>
+
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item mx-1"><a class="nav-link" href="/contact"><i class="fa-fw mr-1 fas fa-envelope"></i><span class="d-none d-md-block">Зворотній зв'язок</span></a></li>        <li class="topbar-divider d-none d-sm-block"></li>
+                <li class="nav-item dropdown no-arrow">
+            <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">Українська <span class="caret"></span></a><div class="dropdown-menu"><a class="active dropdown-item" href="/language?app_language=uk">Українська</a></div>        </li>
+        <li class="topbar-divider d-none d-sm-block"></li><li class="nav-item mx-1"><a class="nav-link" href="/profile"><i class="fa-fw mr-1 fas fa-paper-plane" title="Реєстрація у чат-боті Telegram"></i></a></li>        <li class="topbar-divider d-none d-sm-block"></li>
+                    <li class="nav-item dropdown no-arrow">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                    Авторизація <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" href="/login"><i class="mr-2 fas fa-sign-in-alt"></i>Увійти</a>                </div>
+            </li>
+            </ul>
+</nav>
+
+        <div class="container-fluid">
+            <h1 class="h3 mb-1 text-gray-800" style="display:none">Розклад: Академ. групи </h1><nav aria-label="breadcrumb"><ol id="w9" class="breadcrumb"><li class="breadcrumb-item"><a href="/">Головна</a></li>
+<li class="breadcrumb-item active" aria-current="page">Розклад</li>
+<li class="breadcrumb-item active" aria-current="page">Академ. групи</li>
+</ol></nav>
+<div id="w2"><div id="w3" class="card shadow mb-2"><div class="card-body"><form id="filter-form" class="filter-form" action="/time-table/group?type=0" method="POST">
+<input type="hidden" name="_csrf-frontend" value="cLbVCJu_GNs_kCCwD2jof0Mwo5Ug80Yp7sfR5EUJL-0Dx49rwdtt4m_oS4BFLKsXMQbF5ljHa32hiYmLAEZtiQ=="><div class="filter-form-fields-content row"><div class="form-group col-md-3"><label>Факультет</label><select id="timetableform-facultyid" class="form-control select2-field" name="TimeTableForm[facultyId]">
+<option value="">--Факультет--</option>
+<option value="3" selected>Факультет технологій та бізнесу</option>
+<option value="7">Факультет інформаційних технологій</option>
+<option value="1">Факультет економіки, менеджменту та психології</option>
+<option value="8">Факультет міжнародної торгівлі та права</option>
+<option value="6">Факультет торгівлі та маркетингу</option>
+<option value="5">Факультет фінансів та обліку</option>
+<option value="9">Аспірантура і докторантура</option>
+</select></div><div class="form-group col-md-1"><label>Курс</label><select id="timetableform-course" class="form-control select2-field" name="TimeTableForm[course]">
+<option value="">--Курс--</option>
+<option value="1" selected>1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select></div><div class="form-group col-md-2"><label>Група</label><select id="timetableform-groupid" class="form-control select2-field" name="TimeTableForm[groupId]">
+<option value="">--Група--</option>
+<option value="4403" selected>ФТБ 1-1м</option>
+<option value="4578">ФТБ 1-1</option>
+<option value="4579">ФТБ 1-2</option>
+<option value="4404">ФТБ 1-2м</option>
+<option value="4580">ФТБ 1-3</option>
+<option value="4405">ФТБ 1-3м</option>
+<option value="4581">ФТБ 1-4</option>
+<option value="4406">ФТБ 1-4м</option>
+<option value="4582">ФТБ 1-5</option>
+<option value="4442">ФТБ 1-5м</option>
+<option value="4583">ФТБ 1-6</option>
+<option value="4407">ФТБ 1-6м</option>
+<option value="4700">ФТБ 1-7</option>
+<option value="4408">ФТБ 1-7м</option>
+<option value="4585">ФТБ 1-8</option>
+<option value="4409">ФТБ 1-8м</option>
+<option value="4586">ФТБ 1-9а</option>
+<option value="4410">ФТБ 1-9м</option>
+<option value="4587">ФТБ 1-10</option>
+<option value="4411">ФТБ 1-10м</option>
+<option value="4588">ФТБ 1-11</option>
+<option value="4443">ФТБ 1-11м</option>
+<option value="4589">ФТБ 1-12</option>
+<option value="4764">ФТБ 1-13</option>
+<option value="4590">ФТБ 1-14</option>
+<option value="4592">ФТБ 1-15</option>
+<option value="4593">ФТБ 1-16</option>
+<option value="4594">ФТБ 1-17</option>
+<option value="4595">ФТБ 1-18а</option>
+<option value="4596">ФТБ 1-19</option>
+<option value="4597">ФТБ 1-20</option>
+<option value="4598">ФТБ 1-21а</option>
+<option value="4599">ФТБ 1-1з</option>
+<option value="4412">ФТБ 1-1мз</option>
+<option value="4413">ФТБ 1-2мз</option>
+<option value="4601">ФТБ 1-3з</option>
+<option value="4414">ФТБ 1-3мз</option>
+<option value="4602">ФТБ 1-4з</option>
+<option value="4415">ФТБ 1-4мз</option>
+<option value="4603">ФТБ 1-5з</option>
+<option value="4416">ФТБ 1-5мз</option>
+<option value="4604">ФТБ 1-6з</option>
+<option value="4417">ФТБ 1-6мз</option>
+<option value="4605">ФТБ 1-7з</option>
+<option value="4418">ФТБ 1-7мз</option>
+<option value="4606">ФТБ 1-8з</option>
+<option value="4419">ФТБ 1-8мз</option>
+<option value="4607">ФТБ 1-9з</option>
+<option value="4420">ФТБ 1-9мз</option>
+<option value="4833">ФТБ 1-10з</option>
+<option value="4421">ФТБ 1-10мз</option>
+</select></div></div><div class="filter-form-extra-fields-content row"><div class="form-group col-md-3"><label>Діапазон дат</label><input type="text" id="timetableform-datestart" class="form-control submit" name="date-picker" value="">
+<input type="hidden" id="timetableform-datestart" class="form-control submit" name="TimeTableForm[dateStart]" value="24.08.2026">
+<input type="hidden" id="timetableform-datestart" class="form-control submit" name="TimeTableForm[dateEnd]" value="21.09.2026">
+</div><div class="form-group col-lg-2 col-sm-3"><label for="timetableform-indicationdays">Індикація змін (днів)</label><input type="number" id="timetableform-indicationdays" class="form-control submit" name="TimeTableForm[indicationDays]" value="5" style="background:#36b9cc"></div><div class="form-group col-lg-3 col-sm-4 align-self-end"><input type="checkbox" id="w0" name="time-table-type" value="1" checked></div></div></form></div></div></div><div id="w6" class="card shadow mb-2"><div class="card-body"><a id="w4" class="btn btn-primary mb-2" href="/time-table/print?serviceId=group" target="_blank"><i class="fas fa-print"></i> </a><div id="time-tablew5"><div class="table-container"><table class="table lesson-color-block" id="timeTable"><tr><th class="headday">Пн</th><th class="headdate"><div>24.08.2026</div></th><th class="headdate"><div>31.08.2026</div></th><th class="headdate"><div>07.09.2026</div></th><th class="headdate"><div>14.09.2026</div></th><th class="headdate"><div>21.09.2026</div></th></tr><tr>                    <th class="headcol">
+                        <span class="lesson">1 пара</span>
+                        <span class="start">08:20</span>
+                        <span class="end">09:40</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="31.08.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="07.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="14.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="21.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td></tr><tr><th class="headday">Вт</th><th class="headdate"><div>25.08.2026</div></th><th class="headdate"><div>01.09.2026</div></th><th class="headdate"><div>08.09.2026</div></th><th class="headdate"><div>15.09.2026</div></th><th class="headdate"><div>22.09.2026</div></th></tr><tr>                    <th class="headcol">
+                        <span class="lesson">1 пара</span>
+                        <span class="start">08:20</span>
+                        <span class="end">09:40</span>
+                    </th><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="25.08.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="01.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="08.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="15.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr><th class="headday">Ср</th><th class="headdate"><div>26.08.2026</div></th><th class="headdate"><div>02.09.2026</div></th><th class="headdate"><div>09.09.2026</div></th><th class="headdate"><div>16.09.2026</div></th><th class="headdate"><div>23.09.2026</div></th></tr><tr>                    <th class="headcol">
+                        <span class="lesson">1 пара</span>
+                        <span class="start">08:20</span>
+                        <span class="end">09:40</span>
+                    </th><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="26.08.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="02.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="09.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="16.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="16.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">2 пара</span>
+                        <span class="start">10:05</span>
+                        <span class="end">11:25</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="16.09.2026 2 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">3 пара</span>
+                        <span class="start">12:05</span>
+                        <span class="end">13:25</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="16.09.2026 3 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">4 пара</span>
+                        <span class="start">13:50</span>
+                        <span class="end">15:10</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="16.09.2026 4 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">5 пара</span>
+                        <span class="start">15:25</span>
+                        <span class="end">16:45</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="16.09.2026 5 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">6 пара</span>
+                        <span class="start">17:00</span>
+                        <span class="end">18:20</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="16.09.2026 6 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">7 пара</span>
+                        <span class="start">18:30</span>
+                        <span class="end">19:50</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="16.09.2026 7 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr><th class="headday">Чт</th><th class="headdate"><div>27.08.2026</div></th><th class="headdate"><div>03.09.2026</div></th><th class="headdate"><div>10.09.2026</div></th><th class="headdate"><div>17.09.2026</div></th><th class="headdate"><div>24.09.2026</div></th></tr><tr>                    <th class="headcol">
+                        <span class="lesson">1 пара</span>
+                        <span class="start">08:20</span>
+                        <span class="end">09:40</span>
+                    </th><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="27.08.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="03.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="10.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="17.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="17.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">2 пара</span>
+                        <span class="start">10:05</span>
+                        <span class="end">11:25</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="17.09.2026 2 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">3 пара</span>
+                        <span class="start">12:05</span>
+                        <span class="end">13:25</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="17.09.2026 3 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">4 пара</span>
+                        <span class="start">13:50</span>
+                        <span class="end">15:10</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="17.09.2026 4 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">5 пара</span>
+                        <span class="start">15:25</span>
+                        <span class="end">16:45</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="17.09.2026 5 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">6 пара</span>
+                        <span class="start">17:00</span>
+                        <span class="end">18:20</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="17.09.2026 6 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr>                    <th class="headcol">
+                        <span class="lesson">7 пара</span>
+                        <span class="start">18:30</span>
+                        <span class="end">19:50</span>
+                    </th><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell">&nbsp</div></td><td><div class="cell"><div class="lesson-17 lesson-updated">
+         
+        <div data-toggle="popover" title="17.09.2026 7 пара" data-content="[]<br>ауд. <br><br>Додано:  24.08.2026">
+            <strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr><th class="headday">Пт</th><th class="headdate"><div>28.08.2026</div></th><th class="headdate"><div>04.09.2026</div></th><th class="headdate"><div>11.09.2026</div></th><th class="headdate"><div>18.09.2026</div></th><th class="headdate"><div>25.09.2026</div></th></tr><tr>                    <th class="headcol">
+                        <span class="lesson">1 пара</span>
+                        <span class="start">08:20</span>
+                        <span class="end">09:40</span>
+                    </th><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="28.08.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="04.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="11.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="18.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr><th class="headday">Сб</th><th class="headdate"><div>29.08.2026</div></th><th class="headdate"><div>05.09.2026</div></th><th class="headdate"><div>12.09.2026</div></th><th class="headdate"><div>19.09.2026</div></th><th class="headdate"><div>26.09.2026</div></th></tr><tr>                    <th class="headcol">
+                        <span class="lesson">1 пара</span>
+                        <span class="start">08:20</span>
+                        <span class="end">09:40</span>
+                    </th><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="29.08.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="05.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="12.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="19.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr><tr><th class="headday">Нд</th><th class="headdate"><div>30.08.2026</div></th><th class="headdate"><div>06.09.2026</div></th><th class="headdate"><div>13.09.2026</div></th><th class="headdate"><div>20.09.2026</div></th><th class="headdate"><div>27.09.2026</div></th></tr><tr>                    <th class="headcol">
+                        <span class="lesson">1 пара</span>
+                        <span class="start">08:20</span>
+                        <span class="end">09:40</span>
+                    </th><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="30.08.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="06.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="13.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td><div class="cell"><div class="lesson-0 ">
+         
+        <div data-toggle="popover" title="20.09.2026 1 пара" data-content="[]<br>ауд. <br><br>Додано:  01.01.1970">
+            Приховано з 25.8.2026<strong>[]</strong><br>
+            <strong>ауд. </strong><br>
+            <i></i>
+        </div>
+    </div></div></td><td class="closed" data-toggle="tooltip" data-placement="top" title="Виберіть необхідний діапазон дат">&nbsp</td></tr></table></div></div></div></div>
+<div id="modal-view" class="fade modal" role="dialog" tabindex="-1" aria-hidden="true" aria-labelledby="modal-view-label">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 id="modal-view-label" class="modal-title">Оголошення</h5>
+<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+
+</div>
+
+</div>
+</div>
+</div>
+<div id="modal-information" class="fade modal" role="dialog" tabindex="-1" aria-hidden="true" aria-labelledby="modal-information-label">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 id="modal-information-label" class="modal-title">Інформація для студентів</h5>
+<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+
+</div>
+
+</div>
+</div>
+</div>        </div>
+    </div>
+    <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>Copyright © 2008-2026 <a target="_blank" href="http://mkr.org.ua"> ООО "МКР" (http://mkr.org.ua)</a>. <b>Версія</b> 2.6.33</span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+    <div id="spinner" class="mkr-spinner card shadow mb-2" style="display:none"><div class="card-body"><div class="spinner-border" role="status"><span class="sr-only">Завантаження...</span></div></div></div></div>
+
+<script src="/assets/a642e42a/jquery.min.js?v=1693229950"></script>
+<script src="/assets/85275108/js/bootstrap.bundle.min.js?v=1711653467"></script>
+<script>                $(document).on('change', 
+                '#filter-form .filter-form-fields-content select:not(:last,.submit), #filter-form .filter-form-fields-content div:not(.not-submit) select:not(:last,.submit)', function(){
+            
+                var form  = $(this).closest('form');
+                var url = form.attr('action');
+                
+                $('#filter-form .filter-form-fields-content select:last, #filter-form .filter-form-fields-content div:not(.not-submit) select:last').val('');
+        
+                $.ajax({
+                    type: 'POST',
+                    url:  url,
+                    data: form.serialize(),
+                    success:function(data){
+                        $(form).html($('#filter-form', data).html());
+                        $('#filter-form-extra').html('');
+                        
+                        initSelect2({'theme' : 'bootstrap4'})
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        if (jqXHR.status == 500) {
+                            alert( 'Internal error: ' + jqXHR.responseText)
+                        } else {
+                            if (jqXHR.status == 403) {
+                                alert('Access error: ' + jqXHR.responseText)
+                            } else {
+                                alert('Unexpected error.')
+                            }
+                        }
+                    }
+                });
+            });
+        
+            $(document).on('change', '#filter-form .filter-form-fields-content select:last, #filter-form .filter-form-fields-content div:not(.not-submit) select:last, #filter-form .submit', function(){
+                $(this).closest('form').submit();
+            });
+            
+            function initSelect2(options){
+                $('.select2-field').each(function (){
+                    let optionsTmp = options;
+                    optionsTmp['placeholder'] = $(this).attr('placeholder');
+                    $(this).select2(optionsTmp);
+                })
+            }
+            $(document).on('click','#w4',
+                function(e){
+                    e.preventDefault();
+                    let form = $("#filter-form");
+                    let action=form.attr("action");
+                    form.attr("action", $(this).attr('href'));
+                    form.submit();
+                    form.attr("action", action);
+                }
+            );
+            $(function () {
+                $('[data-toggle="popover"]').popover({
+                    html:true
+                })
+                
+                $('body').on('click', function (e) {
+                    $('[data-toggle="popover"]').each(function () {
+                        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                            $(this).popover('hide');
+                        }
+                    });
+                });
+            });            var modalViewAds = $('#modal-view');
+            $('.btn-show-ads').click(function(e){
+                e.preventDefault();
+                let button = $(this);
+                $.ajax({
+                    url: '/time-table/show-ads?r1='+button.data('r1')+'&r2='+button.data('r2'),
+                    dataType: 'json',
+                    method:'GET',
+                    success: function(data) {
+                        $('#modal-view .modal-body').html(data.html)
+                        modalViewAds.modal('show');                        
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        new Noty({
+                            type: 'error',
+                            layout: 'topRight',
+                            timeout: 5000,
+                            text: jqXHR.responseText
+                        }).show();
+                    }
+                });
+            });            var modalView = $('#modal-information');
+            $('.btn-show-information ').click(function(e){
+                e.preventDefault();
+                let button = $(this);
+                $.ajax({
+                    url: '/time-table/show-information?p1='+button.data('p1'),
+                    dataType: 'json',
+                    method:'GET',
+                    success: function(data) {
+                        
+               //         console.log(data);
+                        
+                        $('#modal-information .modal-body').html(data.html)
+                        modalView.modal('show');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        new Noty({
+                            type: 'error',
+                            layout: 'topRight',
+                            timeout: 5000,
+                            text: jqXHR.responseText
+                        }).show();
+                    }
+                });
+            });
+jQuery(document).on('pjax:start', function() { $('#spinner').show(); });
+jQuery(document).on('pjax:end',   function() { $('#spinner').hide();  });                    
+jQuery(document).on('ajaxStart',    function() { $('#spinner').show(); });
+jQuery(document).on('ajaxComplete', function() { $('#spinner').hide();  });                    </script>
+<script>jQuery(function ($) {
+;jQuery('#timetableform-facultyid').select2({"placeholder":"--Факультет--","theme":"bootstrap4"});
+;jQuery('#timetableform-course').select2({"placeholder":"--Курс--","theme":"bootstrap4"});
+;jQuery('#timetableform-groupid').select2({"placeholder":"--Група--","theme":"bootstrap4"});
+$('#timetableform-datestart').daterangepicker({"timePicker":false,"timePicker12Hour":false,"separator":" - ","autoUpdateInput":false,"singleDatePicker":false,"ranges":{"Поточний місяць":[moment().startOf("month"), moment().endOf("month")],"Наступний місяць":[moment().add(1,"months").startOf("month"), moment().add(1,"months").endOf("month")],"Поточний тиждень":[moment().startOf("week"), moment().endOf("week")],"Наступний тиждень":[moment().add(1,"weeks").startOf("week"), moment().add(1,"weeks").endOf("week")]},"locale":{"format":"DD.MM.YYYY","applyLabel":"Обрати","cancelLabel":"Скасувати","fromLabel":"З","toLabel":"До","weekLabel":"Т","customRangeLabel":"Свій період"},"startDate":"24.08.2026","endDate":"21.09.2026"});
+$('#timetableform-datestart').val('24.08.2026 - 21.09.2026');
+$('#timetableform-datestart').on('apply.daterangepicker', function (event, picker) {
+                        var form = $(picker.element[0]).closest('form');
+                        var start = picker.startDate.format('dd.MM.yyyy'.toUpperCase());
+                        var end = picker.endDate.format('dd.MM.yyyy'.toUpperCase());
+                        
+                        $('#timetableform-datestart').val(start + ' - ' + end);
+                        form.find("input[name*='dateStart']").val(start);
+                        form.find("input[name*='dateEnd']").val(end);
+                                            form.submit();
+                    }).on('cancel.daterangepicker', function (event, picker) {
+                        var form = $(picker.element[0]).closest('form');
+                        $('#timetableform-datestart').val('');
+                        form.find("input[name *= 'dateStart']").val('');
+                        form.find("input[name *= 'dateEnd']").val('');
+                    })
+jQuery('#w0').bootstrapToggle({"on":"Табличний вигляд","off":"Календарний вид","size":"sm","onstyle":"warning","offstyle":"info","width":200,"height":38,"class":"submit"});
+jQuery('#w0').on('change',                 function () {
+                    var form = $(this).closest('form');
+                    var url = '';
+                    if($(this).prop('checked'))
+                        url = '/time-table/group?type=0';
+                    else 
+                        url = '/time-table/group?type=1';
+        
+                    form.attr('action', url);
+                    form.submit();
+                });
+jQuery('#modal-view').modal({"show":false});
+jQuery('#modal-information').modal({"show":false});
+});</script>
+
+<script>
+    // Глобальный объект с переводами
+    window.appTranslations = {"invalid_characters":"\u0411\u0443\u0434\u044c \u043b\u0430\u0441\u043a\u0430, \u0432\u0438\u043a\u043e\u0440\u0438\u0441\u0442\u043e\u0432\u0443\u0439\u0442\u0435 \u043b\u0438\u0448\u0435 \u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u0456 \u0441\u0438\u043c\u0432\u043e\u043b\u0438: \u043b\u0456\u0442\u0435\u0440\u0438, \u0446\u0438\u0444\u0440\u0438 \u0442\u0430 \u0440\u043e\u0437\u0434\u0456\u043b\u043e\u0432\u0456 \u0437\u043d\u0430\u043a\u0438"};
+</script>
+
+
+</body>
+</html>
