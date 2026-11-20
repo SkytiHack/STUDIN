@@ -507,6 +507,7 @@ function App() {
               now={now}
               effectiveSubgroup={effectiveSubgroup}
               selectedGroup={selectedGroup}
+              faculties={faculties}
               onRetry={() => selectedGroup && fetchSchedule(selectedGroup.id)}
               onOpenStudents={() => navigateTo('students')}
               onSelectLesson={(lesson) => {

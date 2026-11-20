@@ -15,6 +15,14 @@ export interface Group {
   course: number;
 }
 
+export interface SavedFriendGroup {
+  id: string;        // unique bookmark id or groupId
+  groupId: string;
+  groupName: string; // e.g. "ФТМ 3-10"
+  label: string;     // optional friend name e.g. "Макс"
+  subgroup: number;  // 0 = all, 1 = sub 1, 2 = sub 2
+}
+
 export interface ScheduleItem {
   id: string;
   date: string;
