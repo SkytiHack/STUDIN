@@ -80,6 +80,7 @@ export type Page =
   | 'services'
   | 'campus'
   | 'directory'
+  | 'community'
   | 'bells'
   | 'events'
   | 'event-detail'

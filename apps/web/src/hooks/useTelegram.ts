@@ -5,8 +5,12 @@ export function useTelegram() {
 
   useEffect(() => {
     if (!tg) return;
+    document.body.classList.add('is-tg');
+    try { tg.ready?.(); } catch (_e) { /* ignore */ }
     try { tg.expand(); } catch (_e) { /* ignore */ }
     try {
+      // Expand Mini App without forcing fullscreen overlay if it clashes with header,
+      // or if fullscreen is enabled, apply proper safe-area CSS padding.
       if (tg.requestFullscreen) {
         tg.requestFullscreen();
         document.body.classList.add('is-fullscreen');
@@ -29,7 +33,18 @@ export function useTelegram() {
     tg?.close();
   }, [tg]);
 
+  const haptic = useCallback((type: 'light' | 'medium' | 'selection' = 'light') => {
+    try {
+      const hf = (tg as any)?.HapticFeedback;
+      if (!hf) return;
+      if (type === 'selection') hf.selectionChanged?.();
+      else hf.impactOccurred?.(type);
+    } catch {
+      /* ignore */
+    }
+  }, [tg]);
+
   const colorScheme = tg?.colorScheme || 'light';
 
-  return { tg, openLink, close, colorScheme };
+  return { tg, openLink, close, haptic, colorScheme };
 }

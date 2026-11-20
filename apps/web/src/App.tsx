@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import './index.css';
 import type { Faculty, Group, ScheduleItem, Student, Tab, Page, NavTab, StudEvent } from './types';
 import { API, fetchApi, getTelegramId } from './utils/api';
@@ -17,7 +18,7 @@ import { SetupWizard } from './components/setup/SetupWizard';
 import { HomeView } from './components/home/HomeView';
 import { ScheduleView } from './components/schedule/ScheduleView';
 import { LessonDetailView } from './components/schedule/LessonDetailView';
-import { ServicesView, CampusView, DirectoryView } from './components/services/ServicesView';
+import { ServicesView, CampusView, DirectoryView, CommunityView } from './components/services/ServicesView';
 import { BellsView } from './components/bells/BellsView';
 import { EventsView, EventDetailView } from './components/events/EventsView';
 import { ProfileView, NotificationsView, SupportView } from './components/profile/ProfileView';
@@ -58,8 +59,14 @@ function App() {
   const [remindMinutes, setRemindMinutes] = useState<number>(10);
 
   const now = useLiveClock();
-  const { openLink } = useTelegram();
+  const { openLink, haptic } = useTelegram();
   useTheme();
+
+  const navigateTo = (target: Page) => {
+    haptic('light');
+    setPage(target);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // ==================== DATA FETCHING ====================
 
@@ -85,7 +92,6 @@ function App() {
     }
 
     try {
-      // Try fetching courses and all groups for this faculty from the backend
       const coursesRes = await fetchApi(`${API}/api/courses?facultyId=${fid}`);
       if (!coursesRes.ok) throw new Error('Courses fetch failed');
       const coursesList: { id: string; name: string }[] = await coursesRes.json();
@@ -133,7 +139,6 @@ function App() {
     setLoading(true);
     setScheduleError(false);
 
-    // If it's a built-in demo group ID, load demo schedule immediately
     if (gid.startsWith('demo-')) {
       setSchedule(generateDemoSchedule(new Date()));
       setIsDemoData(true);
@@ -153,7 +158,6 @@ function App() {
         setIsDemoData(true);
       }
     } catch {
-      // Fallback to demo schedule so all screens work even without local DB
       setSchedule(generateDemoSchedule(new Date()));
       setIsDemoData(true);
     } finally {
@@ -277,13 +281,14 @@ function App() {
 
   const onFinishSetup = async () => {
     if (!selectedGroup) return;
+    haptic('medium');
     localStorage.setItem('dteu_group_id', selectedGroup.id);
     localStorage.setItem('dteu_group_name', selectedGroup.name);
     localStorage.setItem('dteu_faculty_id', selectedFaculty || '6');
     localStorage.setItem('dteu_user_name', userName.trim());
     localStorage.setItem('dteu_subgroup_override', subgroupOverride.toString());
 
-    setPage('home');
+    navigateTo('home');
     fetchSchedule(selectedGroup.id);
     fetchStudents(selectedGroup.id);
 
@@ -331,7 +336,7 @@ function App() {
             subgroup: effectiveSubgroup,
           }),
         });
-        setPage('group-setup-success');
+        navigateTo('group-setup-success');
       } catch {}
     }
   };
@@ -376,11 +381,12 @@ function App() {
 
   const activeBottomTab: NavTab = useMemo(() => {
     if (page === 'home') return 'home';
-    if (page === 'schedule' || page === 'lesson-detail' || page === 'students') return 'schedule';
+    if (page === 'schedule' || page === 'lesson-detail') return 'schedule';
     if (
       page === 'services' ||
       page === 'campus' ||
       page === 'directory' ||
+      page === 'community' ||
       page === 'bells' ||
       page === 'search' ||
       page === 'teacher-schedule' ||
@@ -388,15 +394,17 @@ function App() {
     )
       return 'services';
     if (page === 'events' || page === 'event-detail') return 'events';
+    // Profile owns 'profile', 'students' (Одногрупники), 'notifications', 'support'
     return 'profile';
   }, [page]);
 
   const handleSelectBottomTab = (navTab: NavTab) => {
-    if (navTab === 'home') setPage('home');
-    else if (navTab === 'schedule') setPage('schedule');
-    else if (navTab === 'services') setPage('services');
-    else if (navTab === 'events') setPage('events');
-    else if (navTab === 'profile') setPage('profile');
+    haptic('selection');
+    if (navTab === 'home') navigateTo('home');
+    else if (navTab === 'schedule') navigateTo('schedule');
+    else if (navTab === 'services') navigateTo('services');
+    else if (navTab === 'events') navigateTo('events');
+    else if (navTab === 'profile') navigateTo('profile');
   };
 
   return (
@@ -404,249 +412,317 @@ function App() {
       {/* Universal Top Header ("STUD IN / ТВІЙ СТУДЕНТСЬКИЙ ПРОСТІР" + Notification Bell) */}
       <TopHeader
         onBrandClick={() => {
-          if (!isOnboardingPage) setPage('home');
+          if (!isOnboardingPage) navigateTo('home');
         }}
-        onBellClick={() => {
-          if (!isOnboardingPage) setPage('notifications');
-        }}
+        onBellClick={
+          !isOnboardingPage
+            ? () => {
+                navigateTo('notifications');
+              }
+            : undefined
+        }
       />
 
-      {/* ==================== ONBOARDING SCREENS (03, 09, 10) ==================== */}
-      {(page === 'setup' || page === 'setup-group-search' || page === 'setup-ready') && (
-        <SetupWizard
-          step={page}
-          setStep={(s) => setPage(s)}
-          faculties={faculties}
-          selectedFaculty={selectedFaculty}
-          onFacultyChange={onFacultyChange}
-          groups={groups}
-          selectedGroup={selectedGroup}
-          setSelectedGroup={setSelectedGroup}
-          userName={userName}
-          setUserName={setUserName}
-          onFinish={onFinishSetup}
-          onOpenHint={() => setIsHintModalOpen(true)}
-        />
-      )}
+      {/* Smooth Page Transition Container */}
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={page}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+        >
+          {/* ==================== ONBOARDING SCREENS (03, 09, 10) ==================== */}
+          {(page === 'setup' || page === 'setup-group-search' || page === 'setup-ready') && (
+            <SetupWizard
+              step={page}
+              setStep={(s) => navigateTo(s)}
+              faculties={faculties}
+              selectedFaculty={selectedFaculty}
+              onFacultyChange={onFacultyChange}
+              groups={groups}
+              selectedGroup={selectedGroup}
+              setSelectedGroup={setSelectedGroup}
+              userName={userName}
+              setUserName={setUserName}
+              onFinish={onFinishSetup}
+              onOpenHint={() => setIsHintModalOpen(true)}
+            />
+          )}
 
-      {/* ==================== SCREEN 01 & 09 (DARK): ГОЛОВНА ==================== */}
-      {page === 'home' && (
-        <HomeView
-          userName={userName}
-          selectedGroup={selectedGroup}
-          schedule={schedule}
-          effectiveSubgroup={effectiveSubgroup}
-          now={now}
-          events={DEMO_EVENTS}
-          onNavigate={setPage}
-          onSelectLesson={(lesson) => {
-            setSelectedLesson(lesson);
-            setPage('lesson-detail');
-          }}
-          onSelectEvent={(ev) => {
-            setSelectedEvent(ev);
-            setPage('event-detail');
-          }}
-        />
-      )}
+          {/* ==================== SCREEN 01 & 09 (DARK): ГОЛОВНА ==================== */}
+          {page === 'home' && (
+            <HomeView
+              userName={userName}
+              selectedGroup={selectedGroup}
+              schedule={schedule}
+              effectiveSubgroup={effectiveSubgroup}
+              now={now}
+              events={DEMO_EVENTS}
+              onNavigate={navigateTo}
+              onSelectLesson={(lesson) => {
+                setSelectedLesson(lesson);
+                navigateTo('lesson-detail');
+              }}
+              onSelectEvent={(ev) => {
+                setSelectedEvent(ev);
+                navigateTo('event-detail');
+              }}
+            />
+          )}
 
-      {/* ==================== SCREEN 02 & STATES 01-04 & 10 (DARK): РОЗКЛАД ==================== */}
-      {page === 'schedule' && (
-        <ScheduleView
-          schedule={schedule}
-          loading={loading}
-          error={scheduleError}
-          isDemoData={isDemoData}
-          tab={tab}
-          setTab={setTab}
-          now={now}
-          effectiveSubgroup={effectiveSubgroup}
-          selectedGroup={selectedGroup}
-          onRetry={() => selectedGroup && fetchSchedule(selectedGroup.id)}
-          onOpenStudents={() => setPage('students')}
-          onSelectLesson={(lesson) => {
-            setSelectedLesson(lesson);
-            setPage('lesson-detail');
-          }}
-        />
-      )}
+          {/* ==================== SCREEN 02 & STATES 01-04 & 10 (DARK): РОЗКЛАД ==================== */}
+          {page === 'schedule' && (
+            <ScheduleView
+              schedule={schedule}
+              loading={loading}
+              error={scheduleError}
+              isDemoData={isDemoData}
+              tab={tab}
+              setTab={(t) => {
+                haptic('selection');
+                setTab(t);
+              }}
+              now={now}
+              effectiveSubgroup={effectiveSubgroup}
+              selectedGroup={selectedGroup}
+              onRetry={() => selectedGroup && fetchSchedule(selectedGroup.id)}
+              onOpenStudents={() => navigateTo('students')}
+              onSelectLesson={(lesson) => {
+                setSelectedLesson(lesson);
+                navigateTo('lesson-detail');
+              }}
+            />
+          )}
 
-      {/* ==================== SCREEN 11: ДЕТАЛІ ЗАНЯТТЯ ==================== */}
-      {page === 'lesson-detail' && selectedLesson && (
-        <LessonDetailView
-          lesson={selectedLesson}
-          selectedGroup={selectedGroup}
-          onBack={() => setPage('schedule')}
-          openLink={openLink}
-        />
-      )}
+          {/* ==================== SCREEN 11: ДЕТАЛІ ЗАНЯТТЯ ==================== */}
+          {page === 'lesson-detail' && selectedLesson && (
+            <LessonDetailView
+              lesson={selectedLesson}
+              selectedGroup={selectedGroup}
+              onBack={() => navigateTo('schedule')}
+              openLink={openLink}
+            />
+          )}
 
-      {/* ==================== SCREEN 12: ОДНОГРУПНИКИ ==================== */}
-      {page === 'students' && (
-        <StudentsView
-          students={students}
-          selectedGroup={selectedGroup}
-          matchedStudentIndex={matchedStudentIndex}
-          userName={userName}
-        />
-      )}
+          {/* ==================== SCREEN 12: ОДНОГРУПНИКИ (у розділі Профіль) ==================== */}
+          {page === 'students' && (
+            <StudentsView
+              students={students}
+              selectedGroup={selectedGroup}
+              matchedStudentIndex={matchedStudentIndex}
+              userName={userName}
+              onBack={() => navigateTo('profile')}
+              openLink={openLink}
+            />
+          )}
 
-      {/* ==================== SCREEN 04: СЕРВІСИ ==================== */}
-      {page === 'services' && <ServicesView onNavigate={setPage} />}
+          {/* ==================== SCREEN 04: СЕРВІСИ ==================== */}
+          {page === 'services' && <ServicesView onNavigate={navigateTo} />}
 
-      {/* ==================== SCREEN 07: КАМПУС ==================== */}
-      {page === 'campus' && <CampusView onBack={() => setPage('services')} />}
+          {/* ==================== СПІЛЬНОТА (Чати та студентська підтримка) ==================== */}
+          {page === 'community' && (
+            <CommunityView onBack={() => navigateTo('services')} openLink={openLink} />
+          )}
 
-      {/* ==================== SCREEN 08: ДОВІДНИК ==================== */}
-      {page === 'directory' && <DirectoryView onBack={() => setPage('services')} />}
+          {/* ==================== SCREEN 07: КАМПУС ==================== */}
+          {page === 'campus' && <CampusView onBack={() => navigateTo('services')} />}
 
-      {/* ==================== SCREEN 07 (STATES): РОЗКЛАД ДЗВІНКІВ ==================== */}
-      {page === 'bells' && <BellsView now={now} />}
+          {/* ==================== SCREEN 08: ДОВІДНИК ==================== */}
+          {page === 'directory' && (
+            <DirectoryView onBack={() => navigateTo('services')} openLink={openLink} />
+          )}
 
-      {/* ==================== SCREEN 05: ПОДІЇ ==================== */}
-      {page === 'events' && (
-        <EventsView
-          events={DEMO_EVENTS}
-          onSelectEvent={(ev) => {
-            setSelectedEvent(ev);
-            setPage('event-detail');
-          }}
-        />
-      )}
-
-      {/* ==================== SCREEN 05 (STATES): ДЕТАЛІ ПОДІЇ ==================== */}
-      {page === 'event-detail' && (
-        <EventDetailView event={selectedEvent} onBack={() => setPage('events')} />
-      )}
-
-      {/* ==================== SCREEN 06: ПРОФІЛЬ ==================== */}
-      {page === 'profile' && (
-        <ProfileView
-          userName={userName}
-          setUserName={setUserName}
-          selectedFaculty={selectedFaculty}
-          faculties={faculties}
-          selectedGroup={selectedGroup}
-          subgroupOverride={subgroupOverride}
-          setSubgroupOverride={setSubgroupOverride}
-          onNavigate={setPage}
-          onChangeEducation={() => setPage('setup')}
-          onSaveProfile={handleSaveProfileIdentity}
-        />
-      )}
-
-      {/* ==================== SCREEN 08 (STATES): СПОВІЩЕННЯ ==================== */}
-      {page === 'notifications' && (
-        <NotificationsView
-          notifyLessons={notify15Min}
-          setNotifyLessons={setNotify15Min}
-          remindMinutes={remindMinutes}
-          setRemindMinutes={setRemindMinutes}
-          notifyEvents={notifyChanges}
-          setNotifyEvents={setNotifyChanges}
-          onSave={async () => {
-            await savePreferences();
-            setPage('profile');
-          }}
-        />
-      )}
-
-      {/* ==================== SCREEN 06 (STATES): ПІДТРИМКА · ДЕМО ==================== */}
-      {page === 'support' && <SupportView onBack={() => setPage('profile')} />}
-
-      {/* ==================== EXTRA LEGACY ROUTES (Admin, Grades, Teachers, Group Chat Setup) ==================== */}
-      {page === 'admin' && adminSecret && <AdminPanel secret={adminSecret} api={API} />}
-      {page === 'grades' && <GradesView />}
-      {page === 'teacher-schedule' && <TeacherSchedule />}
-      {page === 'search' && <SearchView />}
-
-      {page === 'group-setup' && (
-        <div className="main-card">
-          <h2 className="stud-h1" style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>
-            Налаштування групи для чату
-          </h2>
-          <p className="stud-subtitle" style={{ marginBottom: '1.1rem' }}>
-            Щоранку о 07:30 сюди надсилатиметься розклад ДТЕУ.
-          </p>
-          <div className="stud-form-group">
-            <label className="stud-label">ФАКУЛЬТЕТ</label>
-            <select
-              className="stud-select"
-              value={selectedFaculty}
-              onChange={(e) => onFacultyChange(e.target.value)}
-            >
-              <option value="">Виберіть факультет</option>
-              {faculties.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          {courses.length > 0 && (
-            <div className="stud-form-group">
-              <label className="stud-label">КУРС</label>
-              <select
-                className="stud-select"
-                value={selectedCourse}
-                onChange={(e) => onCourseChange(e.target.value)}
-              >
-                <option value="">Виберіть курс</option>
-                {courses.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+          {/* ==================== SCREEN 07 (STATES): РОЗКЛАД ДЗВІНКІВ ==================== */}
+          {page === 'bells' && (
+            <div>
+              <button type="button" className="stud-back-link" onClick={() => navigateTo('services')}>
+                ‹ До сервісів
+              </button>
+              <BellsView now={now} />
             </div>
           )}
-          {groups.length > 0 && (
-            <div className="stud-form-group">
-              <label className="stud-label">ГРУПА</label>
-              <select
-                className="stud-select"
-                value={selectedGroup?.id || ''}
-                onChange={(e) => {
-                  const g = groups.find((x) => x.id === e.target.value);
-                  if (g) setSelectedGroup(g);
+
+          {/* ==================== SCREEN 05: ПОДІЇ ==================== */}
+          {page === 'events' && (
+            <EventsView
+              events={DEMO_EVENTS}
+              onSelectEvent={(ev) => {
+                setSelectedEvent(ev);
+                navigateTo('event-detail');
+              }}
+            />
+          )}
+
+          {/* ==================== SCREEN 05 (STATES): ДЕТАЛІ ПОДІЇ ==================== */}
+          {page === 'event-detail' && (
+            <EventDetailView event={selectedEvent} onBack={() => navigateTo('events')} />
+          )}
+
+          {/* ==================== SCREEN 06: ПРОФІЛЬ ==================== */}
+          {page === 'profile' && (
+            <ProfileView
+              userName={userName}
+              setUserName={setUserName}
+              selectedFaculty={selectedFaculty}
+              faculties={faculties}
+              selectedGroup={selectedGroup}
+              subgroupOverride={subgroupOverride}
+              setSubgroupOverride={setSubgroupOverride}
+              onNavigate={navigateTo}
+              onChangeEducation={() => navigateTo('setup')}
+              onSaveProfile={handleSaveProfileIdentity}
+            />
+          )}
+
+          {/* ==================== SCREEN 08 (STATES): СПОВІЩЕННЯ ==================== */}
+          {page === 'notifications' && (
+            <div>
+              <button type="button" className="stud-back-link" onClick={() => navigateTo('profile')}>
+                ‹ До профілю
+              </button>
+              <NotificationsView
+                notifyLessons={notify15Min}
+                setNotifyLessons={setNotify15Min}
+                remindMinutes={remindMinutes}
+                setRemindMinutes={setRemindMinutes}
+                notifyEvents={notifyChanges}
+                setNotifyEvents={setNotifyChanges}
+                onSave={async () => {
+                  await savePreferences();
+                  navigateTo('profile');
                 }}
-              >
-                <option value="">Виберіть групу</option>
-                {groups.map((g) => (
-                  <option key={g.id} value={g.id}>
-                    {g.name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
           )}
-          <button
-            type="button"
-            className="stud-btn-primary"
-            disabled={!selectedGroup}
-            onClick={onSaveGroupSetup}
-          >
-            Зберегти налаштування →
-          </button>
-        </div>
-      )}
 
-      {page === 'group-setup-success' && (
-        <div className="stud-state-card" style={{ marginTop: '2rem' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>✅</div>
-          <h2 className="stud-state-title">Готово!</h2>
-          <p className="stud-state-desc" style={{ marginBottom: '1.5rem' }}>
-            Розклад для цієї групи успішно збережено.
-          </p>
-          <button
-            type="button"
-            className="stud-btn-primary"
-            onClick={() => window.Telegram?.WebApp?.close()}
-          >
-            Закрити вікно
-          </button>
-        </div>
-      )}
+          {/* ==================== SCREEN 06 (STATES): ПІДТРИМКА · ДЕМО ==================== */}
+          {page === 'support' && (
+            <div>
+              <button type="button" className="stud-back-link" onClick={() => navigateTo('profile')}>
+                ‹ До профілю
+              </button>
+              <SupportView onBack={() => navigateTo('profile')} />
+            </div>
+          )}
+
+          {/* ==================== НАВЧАЛЬНІ ІНСТРУМЕНТИ (Оцінки МІА, Викладачі, Пошук) ==================== */}
+          {page === 'admin' && adminSecret && <AdminPanel secret={adminSecret} api={API} />}
+          {page === 'grades' && (
+            <div>
+              <button type="button" className="stud-back-link" onClick={() => navigateTo('services')}>
+                ‹ До сервісів
+              </button>
+              <GradesView />
+            </div>
+          )}
+          {page === 'teacher-schedule' && (
+            <div>
+              <button type="button" className="stud-back-link" onClick={() => navigateTo('services')}>
+                ‹ До сервісів
+              </button>
+              <TeacherSchedule />
+            </div>
+          )}
+          {page === 'search' && (
+            <div>
+              <button type="button" className="stud-back-link" onClick={() => navigateTo('services')}>
+                ‹ До сервісів
+              </button>
+              <SearchView />
+            </div>
+          )}
+
+          {page === 'group-setup' && (
+            <div className="main-card">
+              <h2 className="stud-h1" style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>
+                Налаштування групи для чату
+              </h2>
+              <p className="stud-subtitle" style={{ marginBottom: '1.1rem' }}>
+                Щоранку о 07:30 сюди надсилатиметься розклад ДТЕУ.
+              </p>
+              <div className="stud-form-group">
+                <label className="stud-label">ФАКУЛЬТЕТ</label>
+                <select
+                  className="stud-select"
+                  value={selectedFaculty}
+                  onChange={(e) => onFacultyChange(e.target.value)}
+                >
+                  <option value="">Виберіть факультет</option>
+                  {faculties.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {courses.length > 0 && (
+                <div className="stud-form-group">
+                  <label className="stud-label">КУРС</label>
+                  <select
+                    className="stud-select"
+                    value={selectedCourse}
+                    onChange={(e) => onCourseChange(e.target.value)}
+                  >
+                    <option value="">Виберіть курс</option>
+                    {courses.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {groups.length > 0 && (
+                <div className="stud-form-group">
+                  <label className="stud-label">ГРУПА</label>
+                  <select
+                    className="stud-select"
+                    value={selectedGroup?.id || ''}
+                    onChange={(e) => {
+                      const g = groups.find((x) => x.id === e.target.value);
+                      if (g) setSelectedGroup(g);
+                    }}
+                  >
+                    <option value="">Виберіть групу</option>
+                    {groups.map((g) => (
+                      <option key={g.id} value={g.id}>
+                        {g.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <button
+                type="button"
+                className="stud-btn-primary"
+                disabled={!selectedGroup}
+                onClick={onSaveGroupSetup}
+              >
+                Зберегти налаштування →
+              </button>
+            </div>
+          )}
+
+          {page === 'group-setup-success' && (
+            <div className="stud-state-card" style={{ marginTop: '2rem' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>✅</div>
+              <h2 className="stud-state-title">Готово!</h2>
+              <p className="stud-state-desc" style={{ marginBottom: '1.5rem' }}>
+                Розклад для цієї групи успішно збережено.
+              </p>
+              <button
+                type="button"
+                className="stud-btn-primary"
+                onClick={() => window.Telegram?.WebApp?.close()}
+              >
+                Закрити вікно
+              </button>
+            </div>
+          )}
+        </motion.main>
+      </AnimatePresence>
 
       {/* ==================== BOTTOM NAVIGATION BAR ==================== */}
       {!isOnboardingPage && (
