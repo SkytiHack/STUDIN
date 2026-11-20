@@ -209,39 +209,25 @@ bot.start((ctx: Context & { startPayload?: string }) => {
     });
   }
 
-  const firstName = esc(ctx.from?.first_name) || 'студенте';
   const welcomeMsg = [
-    `<b>STUD IN</b> — твій студентський простір ✨`,
+    `<b>STUD IN</b> · Твій студентський простір`,
     ``,
-    `Привіт, <b>${firstName}</b>! Увесь університет ДТЕУ тепер у зручному форматі просто в Telegram:`,
-    ``,
-    `<blockquote>📅  <b>Персональний розклад</b> на день, тиждень і місяць з автовизначенням підгрупи\n🔔  <b>Розумні сповіщення</b> перед початком пари та при змінах у розкладі\n🎓  <b>Журнал оцінок МІА</b>, розклад дзвінків, викладачів і карта кампусу\n✨  <b>Актуальні події</b>, конкурси та студентське життя ДТЕУ</blockquote>`,
-    ``,
-    `Натискай кнопку нижче, щоб відкрити свій простір 👇`,
+    `Розклад занять, події та сервіси ДТЕУ в одному місці.`,
   ].join('\n');
 
   ctx.reply(welcomeMsg, {
     parse_mode: 'HTML',
     reply_markup: {
-      inline_keyboard: [[{ text: '✨ Відкрити STUD IN', web_app: { url } }]],
+      inline_keyboard: [[{ text: 'Відкрити STUD IN', web_app: { url } }]],
     },
   });
 });
 
 bot.help((ctx: Context) => {
-  const helpMsg = [
-    `<b>STUD IN · Довідка</b>`,
-    ``,
-    `Усі функції доступні всередині мінізастосунку:`,
-    `• зміна групи, імені та підгрупи — у вкладці <b>Профіль</b>`,
-    `• налаштування нагадувань — <b>Профіль → Сповіщення</b>`,
-    `• карта корпусів, оцінки МІА та дзвінки — у вкладці <b>Сервіси</b>`,
-  ].join('\n');
-
-  ctx.reply(helpMsg, {
+  ctx.reply(`<b>STUD IN</b> · Усі налаштування та розклад доступні в застосунку 👇`, {
     parse_mode: 'HTML',
     reply_markup: {
-      inline_keyboard: [[{ text: '✨ Відкрити STUD IN', web_app: { url: WEB_APP_URL } }]],
+      inline_keyboard: [[{ text: 'Відкрити STUD IN', web_app: { url: WEB_APP_URL } }]],
     },
   });
 });
