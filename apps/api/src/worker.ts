@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import { prisma, disconnectPrisma } from './prisma';
 import { MiaDteuProvider } from '@dteu-schedule/mia-parser';
 import { detectChanges, saveChanges } from './diff';
+import { syncEventsToDb } from './events';
 
 const provider = new MiaDteuProvider();
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -11,6 +12,9 @@ export async function syncAll() {
   console.log('[Worker] Starting full schedule synchronization...');
   
   try {
+    // Sync official SUTE events immediately via JSON API
+    await syncEventsToDb();
+
     const faculties = await provider.getFaculties();
     console.log(`[Worker] Found ${faculties.length} faculties.`);
     
@@ -182,9 +186,14 @@ export async function syncAll() {
   }
 }
 
-// Run every night at 03:00 AM
+// Run full schedule sync every night at 03:00 AM
 cron.schedule('0 3 * * *', () => {
   syncAll();
+}, { timezone: 'Europe/Kyiv' });
+
+// Sync official SUTE events every 30 minutes
+cron.schedule('*/30 * * * *', () => {
+  syncEventsToDb().catch(console.error);
 }, { timezone: 'Europe/Kyiv' });
 
 // Run once immediately on start if specified

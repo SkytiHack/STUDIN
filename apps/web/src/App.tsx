@@ -9,6 +9,7 @@ import {
   DEMO_EVENTS,
   generateDemoSchedule,
 } from './utils/constants';
+import { fetchUniversityEvents } from './utils/suteEvents';
 import { useLiveClock } from './hooks/useLiveClock';
 import { useTelegram } from './hooks/useTelegram';
 import { useTheme } from './hooks/useTheme';
@@ -49,6 +50,8 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const [selectedLesson, setSelectedLesson] = useState<ScheduleItem | null>(null);
+  const [events, setEvents] = useState<StudEvent[]>(DEMO_EVENTS);
+  const [eventsLoading, setEventsLoading] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<StudEvent>(DEMO_EVENTS[0]);
 
   const [subgroupOverride, setSubgroupOverride] = useState<number>(0);
@@ -179,6 +182,21 @@ function App() {
     }
   };
 
+  const loadLiveEvents = async () => {
+    setEventsLoading(true);
+    try {
+      const live = await fetchUniversityEvents();
+      if (Array.isArray(live) && live.length > 0) {
+        setEvents(live);
+        setSelectedEvent((prev) => live.find((e) => e.id === prev.id) || live[0]);
+      }
+    } catch {
+      // Keep fallback DEMO_EVENTS if completely offline
+    } finally {
+      setEventsLoading(false);
+    }
+  };
+
   // ==================== INIT ====================
 
   useEffect(() => {
@@ -188,6 +206,7 @@ function App() {
     if (explicitChatId) {
       setPage('group-setup');
       fetchFaculties();
+    loadLiveEvents();
       return;
     }
 
@@ -199,6 +218,7 @@ function App() {
     }
 
     fetchFaculties();
+    loadLiveEvents();
 
     const id = localStorage.getItem('dteu_group_id');
     const name = localStorage.getItem('dteu_group_name');
@@ -459,7 +479,7 @@ function App() {
               schedule={schedule}
               effectiveSubgroup={effectiveSubgroup}
               now={now}
-              events={DEMO_EVENTS}
+              events={events}
               onNavigate={navigateTo}
               onSelectLesson={(lesson) => {
                 setSelectedLesson(lesson);
@@ -547,7 +567,9 @@ function App() {
           {/* ==================== SCREEN 05: ПОДІЇ ==================== */}
           {page === 'events' && (
             <EventsView
-              events={DEMO_EVENTS}
+              events={events}
+              loading={eventsLoading}
+              onRefresh={loadLiveEvents}
               onSelectEvent={(ev) => {
                 setSelectedEvent(ev);
                 navigateTo('event-detail');
@@ -557,7 +579,11 @@ function App() {
 
           {/* ==================== SCREEN 05 (STATES): ДЕТАЛІ ПОДІЇ ==================== */}
           {page === 'event-detail' && (
-            <EventDetailView event={selectedEvent} onBack={() => navigateTo('events')} />
+            <EventDetailView
+              event={selectedEvent}
+              onBack={() => navigateTo('events')}
+              openLink={openLink}
+            />
           )}
 
           {/* ==================== SCREEN 06: ПРОФІЛЬ ==================== */}

@@ -243,7 +243,9 @@ export const HomeView: React.FC<Props> = ({
           </div>
           <div className="stud-list-body">
             <div className="stud-list-title">{featuredEvent.title}</div>
-            <div className="stud-list-sub">Приклад події · Студжиття</div>
+            <div className="stud-list-sub">
+              {featuredEvent.isLive ? 'Офіційний анонс · sute.edu.ua' : 'Приклад події · Студжиття'}
+            </div>
           </div>
           <span className="stud-list-arrow">→</span>
         </button>

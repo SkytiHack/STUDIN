@@ -9,6 +9,7 @@ import { syncAll, syncSingleGroup } from "./worker";
 import { getMkrStudents, flushMkrCache } from "./mkr";
 import { MiaDteuProvider } from '@dteu-schedule/mia-parser';
 import { generateIcsCalendar } from './ics';
+import { getEventsWithFallback, syncEventsToDb } from './events';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -109,6 +110,29 @@ const requireAdmin = (req: express.Request, res: express.Response, next: express
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString(), uptime: process.uptime() });
+});
+
+// ==================== SUTE EVENTS (JSON API SYNC) ====================
+
+app.get("/api/events", cacheMiddleware(300), async (req, res) => {
+  try {
+    const events = await getEventsWithFallback();
+    res.json(events);
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+    res.status(500).json({ error: "Failed to fetch university events" });
+  }
+});
+
+app.post("/api/events/sync", async (req, res) => {
+  try {
+    const events = await syncEventsToDb();
+    apiCache.del("/api/events");
+    res.json({ success: true, count: events.length, events });
+  } catch (error) {
+    console.error("Failed to sync events:", error);
+    res.status(500).json({ error: "Failed to sync events" });
+  }
 });
 
 // ==================== SYNC (Protected) ====================
@@ -711,8 +735,9 @@ app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
 const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   
-  // Force a sync on startup to ensure all faculties (e.g. FFO) are in the DB
+  // Sync SUTE events and faculties/schedules on startup
   console.log('Triggering background sync on startup...');
+  syncEventsToDb().catch(console.error);
   syncAll().catch(console.error);
 });
 

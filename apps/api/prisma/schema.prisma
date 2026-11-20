@@ -116,3 +116,29 @@ model Grade {
   @@unique([userId, subject, category])
   @@index([userId])
 }
+
+model UniversityEvent {
+  id              String    @id @default(cuid())
+  uri             String    @unique
+  externalId      String?
+  title           String
+  subtitle        String
+  category        String    // "study" | "studlife" | "opportunities"
+  categoryBadge   String
+  dateLabel       String
+  dayNum          String
+  monthShort      String
+  startDate       DateTime?
+  timeInfo        String
+  locationTitle   String
+  locationSub     String
+  description     String
+  descriptionHtml String?
+  actionUrl       String?
+  sourceUrl       String
+  isSticky        Boolean   @default(false)
+  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime  @default(now())
+
+  @@index([startDate])
+}

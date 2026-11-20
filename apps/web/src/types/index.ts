@@ -51,6 +51,7 @@ export interface ScheduleChange {
 
 export interface StudEvent {
   id: string;
+  uri?: string;
   title: string;
   subtitle: string;
   category: 'study' | 'studlife' | 'opportunities';
@@ -62,9 +63,13 @@ export interface StudEvent {
   locationTitle: string;
   locationSub: string;
   description: string;
-  organizerInfo: string;
-  registrationOpen: boolean;
+  descriptionHtml?: string;
+  actionUrl?: string;
+  sourceUrl?: string;
+  organizerInfo?: string;
+  registrationOpen?: boolean;
   isFeatured?: boolean;
+  isLive?: boolean;
 }
 
 export type Tab = 'today' | 'tomorrow' | 'week' | 'month';
