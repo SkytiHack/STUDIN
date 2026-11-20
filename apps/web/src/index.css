@@ -1246,33 +1246,28 @@ body.is-fullscreen .stud-shell {
   transform: translateX(20px);
 }
 
-/* ==================== BOTTOM NAVIGATION BAR (iOS Floating Liquid Glass Dock) ==================== */
+/* ==================== BOTTOM NAVIGATION BAR (Minimal Floating Dock) ==================== */
 .stud-bottom-nav {
   position: fixed;
-  bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
-  left: 0.85rem;
-  right: 0.85rem;
-  max-width: 420px;
+  bottom: calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  left: 0.9rem;
+  right: 0.9rem;
+  max-width: 416px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.74);
-  backdrop-filter: blur(26px) saturate(200%);
-  -webkit-backdrop-filter: blur(26px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.88);
-  border-radius: 26px;
-  box-shadow:
-    0 12px 34px rgba(13, 41, 30, 0.11),
-    0 2px 6px rgba(13, 41, 30, 0.05),
-    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  box-shadow: 0 4px 18px rgba(13, 41, 30, 0.06);
   z-index: 90;
-  padding: 0.42rem 0.45rem;
+  padding: 0.38rem 0.4rem;
 }
 
 [data-theme="dark"] .stud-bottom-nav {
-  background: rgba(14, 33, 24, 0.72);
-  border: 1px solid rgba(168, 242, 58, 0.22);
-  box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.55),
-    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  background: rgba(18, 40, 30, 0.92);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 .stud-bottom-nav-inner {
@@ -1298,8 +1293,8 @@ body.is-fullscreen .stud-shell {
 }
 
 .stud-nav-pill {
-  width: 48px;
-  height: 32px;
+  width: 46px;
+  height: 30px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
@@ -1311,10 +1306,7 @@ body.is-fullscreen .stud-shell {
   position: absolute;
   inset: 0;
   border-radius: 999px;
-  background: linear-gradient(145deg, #B8F94E 0%, #9BE62B 100%);
-  box-shadow:
-    0 4px 14px rgba(168, 242, 58, 0.38),
-    inset 0 1px 1px rgba(255, 255, 255, 0.75);
+  background: var(--accent-lime);
   z-index: 1;
 }
 
@@ -1325,7 +1317,7 @@ body.is-fullscreen .stud-shell {
 .stud-nav-label {
   font-size: 0.67rem;
   font-weight: 600;
-  transition: color 0.2s ease;
+  transition: color 0.18s ease;
 }
 
 .stud-nav-item--active .stud-nav-label {
