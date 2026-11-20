@@ -10,6 +10,7 @@ import {
   generateDemoSchedule,
 } from './utils/constants';
 import { fetchUniversityEvents } from './utils/suteEvents';
+import { exportScheduleToCalendar } from './utils/calendarExport';
 import { useLiveClock } from './hooks/useLiveClock';
 import { useTelegram } from './hooks/useTelegram';
 import { useTheme } from './hooks/useTheme';
@@ -514,6 +515,7 @@ function App() {
                 setSelectedLesson(lesson);
                 navigateTo('lesson-detail');
               }}
+              openLink={openLink}
             />
           )}
 
@@ -600,6 +602,14 @@ function App() {
               onNavigate={navigateTo}
               onChangeEducation={() => navigateTo('setup')}
               onSaveProfile={handleSaveProfileIdentity}
+              onExportCalendar={() =>
+                exportScheduleToCalendar(
+                  selectedGroup?.id,
+                  selectedGroup?.name || 'ФТМ 3-10',
+                  schedule,
+                  openLink
+                )
+              }
             />
           )}
 

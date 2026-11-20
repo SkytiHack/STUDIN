@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import type { Group, Page, ScheduleItem, StudEvent } from '../../types';
-import { typeLabel } from '../../utils/constants';
+import { BELL_SCHEDULE, typeLabel } from '../../utils/constants';
 import { filterBySubgroup } from '../../utils/subgroupFilter';
 
 interface Props {
@@ -13,6 +13,11 @@ interface Props {
   onNavigate: (page: Page) => void;
   onSelectLesson: (lesson: ScheduleItem) => void;
   onSelectEvent: (ev: StudEvent) => void;
+}
+
+function toMinutes(timeStr: string): number {
+  const [h, m] = timeStr.split(':').map(Number);
+  return (h || 0) * 60 + (m || 0);
 }
 
 export const HomeView: React.FC<Props> = ({
@@ -48,9 +53,83 @@ export const HomeView: React.FC<Props> = ({
       .sort((a, b) => a.startTime.localeCompare(b.startTime));
   }, [filtered, todayMidnight]);
 
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const nowTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+  // Live timer state for today's lessons (active lesson or active break between lessons)
+  const liveTimerInfo = useMemo(() => {
+    if (todayLessons.length === 0) return null;
+
+    // 1. Check if a lesson is currently in progress
+    const activeLesson = todayLessons.find(
+      (l) => nowTimeStr >= l.startTime && nowTimeStr <= l.endTime
+    );
+    if (activeLesson) {
+      const startMin = toMinutes(activeLesson.startTime);
+      const endMin = toMinutes(activeLesson.endTime);
+      const total = Math.max(1, endMin - startMin);
+      const elapsed = Math.max(0, nowMinutes - startMin);
+      const left = Math.max(0, endMin - nowMinutes);
+      const percent = Math.min(100, Math.round((elapsed / total) * 100));
+      const bell = BELL_SCHEDULE.find((b) => b.n === activeLesson.lessonNumber);
+      const breakInfo = bell && bell.breakAfter > 0 ? ` · далі перерва ${bell.breakAfter} хв` : '';
+
+      return {
+        mode: 'active' as const,
+        lesson: activeLesson,
+        eyebrow: `ЗАРАЗ ТРИВАЄ ${activeLesson.lessonNumber} ПАРА`,
+        timerLabel: `До кінця пари: ${left} хв${breakInfo}`,
+        percent,
+      };
+    }
+
+    // 2. Check if we are on a break or waiting for the next lesson today
+    const nextToday = todayLessons.find((l) => l.startTime > nowTimeStr);
+    if (nextToday) {
+      const prevToday = [...todayLessons]
+        .reverse()
+        .find((l) => l.endTime < nowTimeStr);
+      const nextStartMin = toMinutes(nextToday.startTime);
+      const leftToStart = Math.max(0, nextStartMin - nowMinutes);
+
+      if (prevToday) {
+        const prevEndMin = toMinutes(prevToday.endTime);
+        const totalBreak = Math.max(1, nextStartMin - prevEndMin);
+        const elapsedBreak = Math.max(0, nowMinutes - prevEndMin);
+        const percent = Math.min(100, Math.round((elapsedBreak / totalBreak) * 100));
+        return {
+          mode: 'break' as const,
+          lesson: nextToday,
+          eyebrow: `ЗАРАЗ ПЕРЕРВА · ДАЛІ ${nextToday.lessonNumber} ПАРА`,
+          timerLabel: `До початку пари залишилось ${leftToStart} хв`,
+          percent,
+        };
+      }
+
+      if (leftToStart <= 120) {
+        const percent = Math.min(100, Math.round(((120 - leftToStart) / 120) * 100));
+        return {
+          mode: 'soon' as const,
+          lesson: nextToday,
+          eyebrow: `СЬОГОДНІ · ${nextToday.lessonNumber} ПАРА`,
+          timerLabel:
+            leftToStart >= 60
+              ? `Початок через ${Math.floor(leftToStart / 60)} год ${leftToStart % 60} хв`
+              : `Початок через ${leftToStart} хв`,
+          percent,
+        };
+      }
+    }
+
+    return null;
+  }, [todayLessons, nowTimeStr, nowMinutes]);
+
   const upcomingLesson = useMemo(() => {
-    const nowTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const todayNext = todayLessons.find((l) => l.endTime >= nowTime);
+    if (liveTimerInfo) {
+      return { lesson: liveTimerInfo.lesson, isToday: true };
+    }
+
+    const todayNext = todayLessons.find((l) => l.endTime >= nowTimeStr);
     if (todayNext) return { lesson: todayNext, isToday: true };
 
     const future = filtered
@@ -68,7 +147,6 @@ export const HomeView: React.FC<Props> = ({
     if (future.length > 0) return { lesson: future[0], isToday: false };
     if (todayLessons.length > 0) return { lesson: todayLessons[0], isToday: true };
 
-    // Fallback demo card matching Screen 01 mockup if schedule array is completely empty
     return {
       isToday: false,
       lesson: {
@@ -83,14 +161,18 @@ export const HomeView: React.FC<Props> = ({
         type: 'lecture',
       } as ScheduleItem,
     };
-  }, [filtered, todayLessons, todayMidnight, now]);
+  }, [liveTimerInfo, filtered, todayLessons, todayMidnight, now, nowTimeStr]);
 
   const eyebrowLabel = useMemo(() => {
+    if (liveTimerInfo) return liveTimerInfo.eyebrow;
     const d = new Date(upcomingLesson.lesson.date);
     const wd = d.toLocaleDateString('uk-UA', { weekday: 'short' }).toUpperCase();
-    const dayMonth = d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' }).toUpperCase().replace('.', '');
+    const dayMonth = d
+      .toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })
+      .toUpperCase()
+      .replace('.', '');
     return `НАСТУПНА ПАРА · ${wd}, ${dayMonth}`;
-  }, [upcomingLesson]);
+  }, [liveTimerInfo, upcomingLesson]);
 
   const firstName = useMemo(() => {
     if (!userName.trim()) return 'студенте';
@@ -106,7 +188,7 @@ export const HomeView: React.FC<Props> = ({
   const featuredEvent = events[0];
 
   return (
-    <div>
+    <div className="stud-anim-in">
       {/* Greeting Header */}
       <div className="stud-page-header">
         <h1 className="stud-h1">Привіт, {userName.trim() ? firstName : 'студенте'}</h1>
@@ -118,7 +200,7 @@ export const HomeView: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Next Lesson Dark Green Featured Card */}
+      {/* Next / Current Lesson Dark Green Featured Card with Live Timer */}
       <div
         className="stud-hero-card"
         onClick={() => onSelectLesson(upcomingLesson.lesson)}
@@ -134,6 +216,45 @@ export const HomeView: React.FC<Props> = ({
           {typeLabel(upcomingLesson.lesson.type)}
           {upcomingLesson.lesson.teacher ? ` · ${upcomingLesson.lesson.teacher}` : ''}
         </div>
+
+        {/* Live Countdown & Progress Bar when a lesson or break is active today */}
+        {liveTimerInfo && (
+          <div style={{ marginBottom: '0.85rem' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontSize: '0.76rem',
+                fontWeight: 700,
+                color: 'var(--accent-lime)',
+                marginBottom: '0.35rem',
+              }}
+            >
+              <span>⏱ {liveTimerInfo.timerLabel}</span>
+              <span>{liveTimerInfo.percent}%</span>
+            </div>
+            <div
+              style={{
+                width: '100%',
+                height: '6px',
+                borderRadius: '999px',
+                background: 'rgba(255, 255, 255, 0.16)',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width: `${liveTimerInfo.percent}%`,
+                  height: '100%',
+                  borderRadius: '999px',
+                  background: 'var(--accent-lime)',
+                  transition: 'width 0.6s ease',
+                }}
+              />
+            </div>
+          </div>
+        )}
 
         <div>
           <span className="stud-online-chip">

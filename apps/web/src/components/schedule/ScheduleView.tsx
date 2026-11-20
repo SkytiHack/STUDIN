@@ -10,6 +10,7 @@ import {
   getNowTimeString,
 } from '../../utils/constants';
 import { API, fetchApi } from '../../utils/api';
+import { exportScheduleToCalendar } from '../../utils/calendarExport';
 import { Modal } from '../common/Modal';
 
 interface Props {
@@ -26,6 +27,7 @@ interface Props {
   onRetry?: () => void;
   onOpenStudents: () => void;
   onSelectLesson: (lesson: ScheduleItem) => void;
+  openLink?: (url: string) => void;
 }
 
 const WEEKDAY_SHORT_UA = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
@@ -103,6 +105,7 @@ export const ScheduleView: React.FC<Props> = ({
   faculties = [],
   onRetry,
   onSelectLesson,
+  openLink,
 }) => {
   const todayDate = useMemo(
     () => new Date(now.getFullYear(), now.getMonth(), now.getDate()),
@@ -656,6 +659,33 @@ export const ScheduleView: React.FC<Props> = ({
           onClick={() => setIsAddModalOpen(true)}
         >
           <span>+ Група друга</span>
+        </button>
+
+        {/* Calendar (.ics) Export Chip */}
+        <button
+          type="button"
+          className="stud-group-chip"
+          title="Додати розклад у Apple / Google Calendar"
+          onClick={() => {
+            const targetGroupId = activeFriendObj ? activeFriendObj.groupId : selectedGroup?.id;
+            const targetGroupName = activeFriendObj
+              ? activeFriendObj.groupName
+              : selectedGroup?.name || 'ФТМ 3-10';
+            exportScheduleToCalendar(
+              targetGroupId,
+              targetGroupName,
+              activeFilteredSchedule,
+              openLink
+            );
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          <span>У календар (.ics)</span>
         </button>
       </div>
 

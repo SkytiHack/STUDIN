@@ -16,6 +16,7 @@ export const ProfileView: React.FC<{
   onNavigate: (page: Page) => void;
   onChangeEducation: () => void;
   onSaveProfile: (newName: string, newSub: number) => void;
+  onExportCalendar?: () => void;
 }> = ({
   userName,
   selectedFaculty,
@@ -25,6 +26,7 @@ export const ProfileView: React.FC<{
   onNavigate,
   onChangeEducation,
   onSaveProfile,
+  onExportCalendar,
 }) => {
   const { theme, setTheme } = useTheme();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -184,6 +186,28 @@ export const ProfileView: React.FC<{
             <span>›</span>
           </div>
         </button>
+
+        {onExportCalendar && (
+          <button
+            type="button"
+            className="stud-group-row"
+            onClick={onExportCalendar}
+          >
+            <div className="stud-group-row-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="3" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span className="stud-group-row-title">Експорт у Календар</span>
+            </div>
+            <div className="stud-group-row-right">
+              <span>Apple / Google (.ics)</span>
+              <span>↗</span>
+            </div>
+          </button>
+        )}
       </div>
 
       {/* Налаштування Section */}

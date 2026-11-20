@@ -232,6 +232,185 @@ bot.help((ctx: Context) => {
   });
 });
 
+// ==================== TELEGRAM INLINE MODE (@bot_username in any chat) ====================
+
+bot.on('inline_query', async (ctx) => {
+  try {
+    const query = (ctx.inlineQuery.query || '').trim();
+    const fromId = ctx.from?.id;
+    const today = getKyivTodayUTC();
+    const kyivNow = getKyivNow();
+    const nowStr = `${String(kyivNow.getHours()).padStart(2, '0')}:${String(kyivNow.getMinutes()).padStart(2, '0')}`;
+    const botUsername = ctx.botInfo?.username || 'studin_bot';
+    const appDeepLink = `https://t.me/${botUsername}`;
+
+    const results: any[] = [];
+
+    // 1. Check if the user has a linked group in DB
+    let userGroup: { id: string; name: string } | null = null;
+    let userSubgroup = 0;
+
+    if (fromId) {
+      const dbUser = await prisma.user.findUnique({
+        where: { telegramId: BigInt(fromId) },
+        include: { student: { include: { group: true } } },
+      });
+      if (dbUser?.student?.group) {
+        userGroup = {
+          id: dbUser.student.group.id,
+          name: dbUser.student.group.name,
+        };
+      }
+      if (dbUser?.preferences) {
+        userSubgroup = (dbUser.preferences as any).subgroup || 0;
+      }
+    }
+
+    // Helper to build today's and next lesson articles for a group
+    const buildGroupArticles = async (
+      group: { id: string; name: string },
+      subgroup: number,
+      isOwnGroup: boolean
+    ) => {
+      let todayLessons = await prisma.scheduleItem.findMany({
+        where: { groupId: group.id, date: today },
+        orderBy: { lessonNumber: 'asc' },
+      });
+
+      if (subgroup > 0) {
+        todayLessons = filterLessonsBySubgroup(todayLessons, subgroup);
+      }
+
+      const nextLesson =
+        todayLessons.find((l) => l.endTime >= nowStr) ||
+        (await prisma.scheduleItem.findFirst({
+          where: { groupId: group.id, date: { gt: today } },
+          orderBy: [{ date: 'asc' }, { lessonNumber: 'asc' }],
+        }));
+
+      // Card A: Schedule for today
+      let todayMsg = `📅 <b>Розклад на сьогодні · ${esc(group.name)}</b>\n\n`;
+      if (todayLessons.length === 0) {
+        todayMsg += `<blockquote>✨ Сьогодні пар немає — вільний день!</blockquote>`;
+      } else {
+        todayLessons.forEach((l) => {
+          todayMsg += `<blockquote><b>${l.lessonNumber} пара · ${esc(l.startTime)}–${esc(l.endTime)}</b>\n<b>${esc(l.subject)}</b>\n📍 ${esc(l.classroom || 'Онлайн')} · 👤 ${esc(l.teacher || 'Не вказано')}</blockquote>\n`;
+        });
+      }
+
+      results.push({
+        type: 'article',
+        id: `today-${group.id}`,
+        title: `${isOwnGroup ? '📅 Мій розклад на сьогодні' : `📅 Розклад ${group.name} на сьогодні`}`,
+        description:
+          todayLessons.length === 0
+            ? `${group.name} · Сьогодні пар немає`
+            : `${group.name} · Сьогодні ${todayLessons.length} пар(и)`,
+        input_message_content: {
+          message_text: todayMsg.trim(),
+          parse_mode: 'HTML',
+        },
+        reply_markup: {
+          inline_keyboard: [[{ text: '✨ Відкрити STUD IN', url: appDeepLink }]],
+        },
+      });
+
+      // Card B: Next / Current Lesson
+      if (nextLesson) {
+        const isCurrent =
+          new Date(nextLesson.date).getTime() === today.getTime() &&
+          nowStr >= nextLesson.startTime &&
+          nowStr <= nextLesson.endTime;
+        const dateStr = new Date(nextLesson.date).toLocaleDateString('uk-UA', {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'long',
+        });
+
+        const nextMsg = [
+          `${isCurrent ? '🟢 <b>Зараз триває пара' : '⏭ <b>Наступна пара'} · ${esc(group.name)}</b>`,
+          ``,
+          `<b>${esc(nextLesson.subject)}</b>`,
+          `<blockquote>🕒  ${esc(nextLesson.startTime)} — ${esc(nextLesson.endTime)} (${nextLesson.lessonNumber} пара · ${esc(dateStr)})\n📍  ${esc(nextLesson.classroom || 'Онлайн')}\n👤  ${esc(nextLesson.teacher || 'Викладач не вказаний')}</blockquote>`,
+        ].join('\n');
+
+        results.push({
+          type: 'article',
+          id: `next-${group.id}`,
+          title: `${isCurrent ? '🟢 Поточна пара' : '⏭ Наступна пара'} (${group.name})`,
+          description: `${nextLesson.startTime}–${nextLesson.endTime} · ${nextLesson.subject} (${nextLesson.classroom || 'Онлайн'})`,
+          input_message_content: {
+            message_text: nextMsg,
+            parse_mode: 'HTML',
+          },
+          reply_markup: {
+            inline_keyboard: [[{ text: '✨ Відкрити STUD IN', url: appDeepLink }]],
+          },
+        });
+      }
+    };
+
+    // If user typed a group search query (e.g. "ФІТ 2-6" or "3-10"), search matching groups
+    if (query.length >= 2) {
+      const matchedGroups = await prisma.group.findMany({
+        where: { name: { contains: query, mode: 'insensitive' } },
+        take: 3,
+      });
+
+      for (const g of matchedGroups) {
+        await buildGroupArticles(g, 0, g.id === userGroup?.id);
+      }
+    } else if (userGroup) {
+      await buildGroupArticles(userGroup, userSubgroup, true);
+    }
+
+    // Always include a card for DTEU Bell Schedule
+    const bellsMsg = [
+      `🔔 <b>Розклад дзвінків · ДТЕУ</b>`,
+      ``,
+      `<blockquote><b>1 пара:</b> 08:20 — 09:40 <i>(перерва 25 хв)</i>\n<b>2 пара:</b> 10:05 — 11:25 <i>(перерва 40 хв)</i>\n<b>3 пара:</b> 12:05 — 13:25 <i>(перерва 25 хв)</i>\n<b>4 пара:</b> 13:50 — 15:10 <i>(перерва 15 хв)</i>\n<b>5 пара:</b> 15:25 — 16:45 <i>(перерва 15 хв)</i>\n<b>6 пара:</b> 17:00 — 18:20</blockquote>`,
+    ].join('\n');
+
+    results.push({
+      type: 'article',
+      id: 'dteu-bells',
+      title: '🔔 Розклад дзвінків ДТЕУ',
+      description: 'Час початку, завершення пар та тривалість перерв',
+      input_message_content: {
+        message_text: bellsMsg,
+        parse_mode: 'HTML',
+      },
+      reply_markup: {
+        inline_keyboard: [[{ text: '✨ Відкрити STUD IN', url: appDeepLink }]],
+      },
+    });
+
+    // Fallback card if user hasn't selected a group yet and typed no query
+    if (results.length === 1) {
+      results.unshift({
+        type: 'article',
+        id: 'studin-share',
+        title: '✨ STUD IN — Твій студентський простір ДТЕУ',
+        description: 'Введи назву групи (напр. ФІТ 2-6) або відкрий застосунок',
+        input_message_content: {
+          message_text: `<b>STUD IN</b> · Твій студентський простір ДТЕУ\n\nРозклад занять, спільні вікна з друзями, події та сервіси університету в одному місці.`,
+          parse_mode: 'HTML',
+        },
+        reply_markup: {
+          inline_keyboard: [[{ text: '✨ Відкрити STUD IN', url: appDeepLink }]],
+        },
+      });
+    }
+
+    await ctx.answerInlineQuery(results, {
+      cache_time: 30,
+      is_personal: true,
+    });
+  } catch (err) {
+    console.error('[InlineQuery] Error:', err);
+  }
+});
+
 bot.command('admin', (ctx: Context) => {
   const adminId = process.env.ADMIN_TG_ID || '';
   if (!adminId || ctx.from?.id.toString() !== adminId) return;
