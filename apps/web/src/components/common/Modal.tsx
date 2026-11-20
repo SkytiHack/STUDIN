@@ -22,16 +22,16 @@ export const Modal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.22 }}
+          transition={{ duration: 0.18 }}
           onClick={onClose}
         >
           <motion.div
             className={`modal-card ${cardClassName || ''}`}
             style={cardStyle}
-            initial={{ opacity: 0, scale: 0.9, y: 24, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, scale: 0.92, y: 16, filter: 'blur(4px)' }}
-            transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 32 }}
             onClick={(e) => e.stopPropagation()}
           >
             {children}
