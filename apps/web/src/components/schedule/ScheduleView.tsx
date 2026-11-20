@@ -668,19 +668,30 @@ export const ScheduleView: React.FC<Props> = ({
             { id: 'week', label: 'Тиждень' },
             { id: 'month', label: 'Місяць' },
           ] as { id: Tab; label: string }[]
-        ).map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            className={`stud-seg-tab ${tab === t.id ? 'stud-seg-tab--active' : ''}`}
-            onClick={() => {
-              setTab(t.id);
-              setShowAllLessons(false);
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+        ).map((t) => {
+          const isActive = tab === t.id;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              className={`stud-seg-tab ${isActive ? 'stud-seg-tab--active' : ''}`}
+              style={{ position: 'relative' }}
+              onClick={() => {
+                setTab(t.id);
+                setShowAllLessons(false);
+              }}
+            >
+              {isActive && (
+                <motion.span
+                  layoutId="stud-seg-liquid-pill"
+                  className="stud-seg-tab-bg"
+                  transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                />
+              )}
+              <span style={{ position: 'relative', zIndex: 2 }}>{t.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* ==================== SCREEN 03: LOADING STATE ==================== */}
@@ -968,18 +979,31 @@ export const ScheduleView: React.FC<Props> = ({
               {weekDays.map((d, i) => {
                 const isSelected = isSameDay(d, selectedWeekDay);
                 return (
-                  <button
+                  <motion.button
+                    whileTap={{ scale: 0.92 }}
                     key={d.toISOString()}
                     type="button"
                     className={`stud-week-day ${isSelected ? 'stud-week-day--active' : ''}`}
+                    style={{ position: 'relative' }}
                     onClick={() => {
                       setSelectedWeekDay(d);
                       setShowAllLessons(false);
                     }}
                   >
-                    <span className="stud-week-day-name">{WEEKDAY_SHORT_UA[i]}</span>
-                    <span className="stud-week-day-num">{d.getDate()}</span>
-                  </button>
+                    {isSelected && (
+                      <motion.span
+                        layoutId="stud-week-liquid-day"
+                        className="stud-week-day-bg"
+                        transition={{ type: 'spring', stiffness: 460, damping: 32 }}
+                      />
+                    )}
+                    <span className="stud-week-day-name" style={{ position: 'relative', zIndex: 2 }}>
+                      {WEEKDAY_SHORT_UA[i]}
+                    </span>
+                    <span className="stud-week-day-num" style={{ position: 'relative', zIndex: 2 }}>
+                      {d.getDate()}
+                    </span>
+                  </motion.button>
                 );
               })}
             </div>

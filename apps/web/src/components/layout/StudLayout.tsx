@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import type { NavTab } from '../../types';
 
 export const TopHeader: React.FC<{
@@ -6,17 +7,30 @@ export const TopHeader: React.FC<{
   onBrandClick?: () => void;
 }> = ({ onBellClick, onBrandClick }) => (
   <header className="stud-topbar">
-    <div className="stud-brand" onClick={onBrandClick} role={onBrandClick ? 'button' : undefined}>
+    <motion.div
+      whileTap={onBrandClick ? { scale: 0.96 } : undefined}
+      className="stud-brand"
+      onClick={onBrandClick}
+      role={onBrandClick ? 'button' : undefined}
+    >
       <span className="stud-brand-title">STUD IN</span>
       <span className="stud-brand-sub">ТВІЙ СТУДЕНТСЬКИЙ ПРОСТІР</span>
-    </div>
+    </motion.div>
     {onBellClick && (
-      <button type="button" className="stud-bell-btn" onClick={onBellClick} aria-label="Сповіщення">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.9, rotate: -12 }}
+        transition={{ type: 'spring', stiffness: 450, damping: 18 }}
+        type="button"
+        className="stud-bell-btn"
+        onClick={onBellClick}
+        aria-label="Сповіщення"
+      >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
-      </button>
+      </motion.button>
     )}
   </header>
 );
@@ -86,15 +100,31 @@ export const BottomNav: React.FC<{
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           return (
-            <button
+            <motion.button
+              whileTap={{ scale: 0.91 }}
               key={item.id}
               type="button"
               className={`stud-nav-item ${isActive ? 'stud-nav-item--active' : ''}`}
               onClick={() => onSelectTab(item.id)}
             >
-              <span className="stud-nav-pill">{item.icon}</span>
+              <span className="stud-nav-pill" style={{ position: 'relative' }}>
+                {isActive && (
+                  <motion.span
+                    layoutId="stud-nav-liquid-pill"
+                    className="stud-nav-pill-bg"
+                    transition={{ type: 'spring', stiffness: 460, damping: 32 }}
+                  />
+                )}
+                <motion.span
+                  animate={{ scale: isActive ? 1.08 : 1, y: isActive ? -0.5 : 0 }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 24 }}
+                  style={{ position: 'relative', zIndex: 2, display: 'inline-flex' }}
+                >
+                  {item.icon}
+                </motion.span>
+              </span>
               <span className="stud-nav-label">{item.label}</span>
-            </button>
+            </motion.button>
           );
         })}
       </div>
