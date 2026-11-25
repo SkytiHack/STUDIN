@@ -25,6 +25,7 @@ targets:
       - path: StudIn
     settings:
       base:
+        GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: ua.edu.dteu.studin
         INFOPLIST_KEY_CFBundleDisplayName: "STUD IN"
         TARGETED_DEVICE_FAMILY: "1,2"
